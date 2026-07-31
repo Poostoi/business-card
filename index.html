@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html :lang="lang" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevAgency</title>
+    <meta name="description" content="Инновационные решения для вашего бизнеса.">
+    <!-- Tailwind CSS (Play CDN for dev) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        graphite: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-indigo-500 selection:text-white" x-data="portfolioData()" x-init="initData()">
+
+    <!-- Header -->
+    <header class="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 border-b border-slate-200/50" x-data="{ mobileMenuOpen: false }">
+        <nav class="max-w-7xl mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+            <div class="flex lg:flex-1">
+                <a href="#" class="-m-1.5 p-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-600 rounded-sm">
+                    <span class="sr-only">Ваша Компания</span>
+                    <span class="text-2xl font-bold tracking-tight text-graphite">DevAgency<span class="text-emerald-600">.</span></span>
+                </a>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="flex lg:hidden">
+                <button 
+                    type="button" 
+                    class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                    @click="mobileMenuOpen = true"
+                >
+                    <span class="sr-only">Открыть главное меню</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Desktop menu -->
+            <div class="hidden lg:flex lg:gap-x-12">
+                <a href="#about" class="text-sm font-medium leading-6 text-slate-700 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_about"></a>
+                <a href="#pricing" class="text-sm font-medium leading-6 text-slate-700 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_pricing"></a>
+                <a href="#workflow" class="text-sm font-medium leading-6 text-slate-700 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_workflow"></a>
+                <a href="#contact" class="text-sm font-medium leading-6 text-slate-700 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_contact"></a>
+            </div>
+            <div class="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-x-6">
+                <div class="flex gap-2 text-sm font-medium text-slate-500">
+                    <a href="#" @click.prevent="lang = 'ru'" :class="lang === 'ru' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RU</a>|
+                    <a href="#" @click.prevent="lang = 'en'" :class="lang === 'en' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">EN</a>|
+                    <a href="#" @click.prevent="lang = 'ro'" :class="lang === 'ro' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RO</a>
+                </div>
+                <a href="#contact" class="text-sm font-semibold leading-6 bg-graphite text-white px-5 py-2.5 rounded-full hover:bg-emerald-600 transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2" x-text="t[lang].btn_contact"></a>
+            </div>
+        </nav>
+        
+        <!-- Mobile menu, show/hide based on menu open state. -->
+        <div 
+            class="lg:hidden" 
+            x-show="mobileMenuOpen" 
+            style="display: none;" 
+            role="dialog" 
+            aria-modal="true"
+        >
+            <!-- Background backdrop -->
+            <div 
+                x-show="mobileMenuOpen"
+                x-transition:enter="transition-opacity ease-linear duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity ease-linear duration-300"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-sm"
+            ></div>
+            
+            <!-- Menu panel -->
+            <div 
+                x-show="mobileMenuOpen"
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="translate-x-full"
+                x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition ease-in duration-300 transform"
+                x-transition:leave-start="translate-x-0"
+                x-transition:leave-end="translate-x-full"
+                class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-slate-900/10"
+                @click.away="mobileMenuOpen = false"
+            >
+                <div class="flex items-center justify-between">
+                    <a href="#" class="-m-1.5 p-1.5">
+                        <span class="sr-only">Ваша Компания</span>
+                        <span class="text-2xl font-bold tracking-tight text-graphite">DevAgency<span class="text-emerald-600">.</span></span>
+                    </a>
+                    <button 
+                        type="button" 
+                        class="-m-2.5 rounded-md p-2.5 text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                        @click="mobileMenuOpen = false"
+                    >
+                        <span class="sr-only">Закрыть меню</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="mt-8 flow-root">
+                    <div class="-my-6 divide-y divide-slate-200/50">
+                        <div class="space-y-2 py-6">
+                            <a href="#about" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_about" @click="mobileMenuOpen = false"></a>
+                            <a href="#pricing" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_pricing" @click="mobileMenuOpen = false"></a>
+                            <a href="#workflow" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_workflow" @click="mobileMenuOpen = false"></a>
+                            <a href="#contact" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_contact" @click="mobileMenuOpen = false"></a>
+                        </div>
+                        <div class="py-6 flex flex-col gap-4">
+                            <div class="flex gap-2 text-sm font-medium text-slate-500 px-3">
+                                <a href="#" @click.prevent="lang = 'ru'" :class="lang === 'ru' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RU</a>|
+                                <a href="#" @click.prevent="lang = 'en'" :class="lang === 'en' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">EN</a>|
+                                <a href="#" @click.prevent="lang = 'ro'" :class="lang === 'ro' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RO</a>
+                            </div>
+                            <a href="#contact" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].btn_contact" @click="mobileMenuOpen = false"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="relative isolate pt-14">
+
+        <div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:gap-x-10 lg:px-8 lg:py-40">
+            <div class="mx-auto max-w-2xl lg:mx-0 lg:flex-auto">
+                <h1 class="text-4xl font-bold tracking-tight text-graphite sm:text-6xl lg:text-7xl">
+                    <span x-html="t[lang].hero_title"></span> <span class="text-emerald-600" x-text="t[lang].hero_title_highlight"></span>
+                </h1>
+                <p class="mt-6 text-lg leading-8 text-slate-600 max-w-xl" x-text="t[lang].hero_desc"></p>
+                <div class="mt-10 flex items-center gap-x-6">
+                    <a href="#contact" class="rounded-full bg-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-600/30 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600" x-text="t[lang].hero_btn_start"></a>
+                </div>
+            </div>
+            
+            <div class="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0 lg:flex-grow relative">
+                <!-- Abstract visual representation for vibe coding -->
+                <div class="relative mx-auto w-[22.875rem] max-w-full drop-shadow-2xl">
+                    <div class="absolute -inset-1 rounded-2xl bg-emerald-500 opacity-30 blur-xl"></div>
+                    <div class="relative bg-white/60 backdrop-blur-xl ring-1 ring-white/50 rounded-2xl p-2 shadow-2xl overflow-hidden aspect-[4/5] flex flex-col">
+                        <div class="flex items-center gap-2 p-3 border-b border-slate-200/50">
+                            <div class="w-3 h-3 rounded-full bg-rose-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col gap-4">
+                            <div class="h-4 w-1/3 bg-slate-200 rounded-full animate-pulse"></div>
+                            <div class="h-4 w-3/4 bg-slate-100 rounded-full animate-pulse animation-delay-150"></div>
+                            <div class="h-4 w-1/2 bg-slate-100 rounded-full animate-pulse animation-delay-300"></div>
+                            
+                            <div class="mt-auto pt-8 flex gap-3">
+                                <div class="h-10 w-24 bg-emerald-100 rounded-lg"></div>
+                                <div class="h-10 w-24 bg-slate-100 rounded-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+
+    <!-- Trust / Benefits Section -->
+    <section id="about" class="py-24 sm:py-32 relative isolate z-10">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl sm:text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-graphite sm:text-4xl" x-text="t[lang].about_title"></h2>
+            </div>
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                
+                <!-- Card 1 -->
+                <div class="bg-white rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-start">
+                    <div class="rounded-lg bg-emerald-50 p-3 ring-1 ring-emerald-100 mb-6">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09l2.846.813-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].about_card1_title"></h3>
+                    <p class="text-slate-600 leading-relaxed" x-text="t[lang].about_card1_desc"></p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-start">
+                    <div class="rounded-lg bg-emerald-50 p-3 ring-1 ring-emerald-100 mb-6">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].about_card2_title"></h3>
+                    <p class="text-slate-600 leading-relaxed" x-text="t[lang].about_card2_desc"></p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-start">
+                    <div class="rounded-lg bg-emerald-50 p-3 ring-1 ring-emerald-100 mb-6">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].about_card3_title"></h3>
+                    <p class="text-slate-600 leading-relaxed" x-text="t[lang].about_card3_desc"></p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-start">
+                    <div class="rounded-lg bg-emerald-50 p-3 ring-1 ring-emerald-100 mb-6">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].about_card4_title"></h3>
+                    <p class="text-slate-600 leading-relaxed" x-text="t[lang].about_card4_desc"></p>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing / Services Section -->
+    <section id="pricing" class="py-24 sm:py-32 relative isolate bg-slate-50">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl sm:text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-graphite sm:text-4xl" x-text="t[lang].pricing_title"></h2>
+                <p class="mt-6 text-lg leading-8 text-slate-600" x-text="t[lang].pricing_desc"></p>
+            </div>
+            
+            <div class="mx-auto grid max-w-lg grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3 items-center">
+                
+                <template x-for="plan in t[lang].pricing" :key="plan.name">
+                    <div :class="plan.popular ? 'bg-graphite rounded-3xl p-8 ring-1 ring-graphite shadow-2xl scale-105 z-10 relative' : 'bg-white rounded-3xl p-8 ring-1 ring-slate-200 shadow-sm hover:shadow-md transition-shadow'">
+                        <div x-show="plan.popular" class="absolute -top-4 left-1/2 -translate-x-1/2">
+                            <span class="bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full" x-text="t[lang].pricing_popular"></span>
+                        </div>
+                        <h3 class="text-lg font-semibold leading-8" :class="plan.popular ? 'text-white' : 'text-graphite'" x-text="plan.name"></h3>
+                        <p class="mt-4 text-sm leading-6" :class="plan.popular ? 'text-slate-300' : 'text-slate-600'" x-text="plan.description"></p>
+                        <p class="mt-6 flex items-baseline gap-x-1">
+                            <span class="text-4xl font-bold tracking-tight" :class="plan.popular ? 'text-white' : 'text-graphite'" x-text="plan.price"></span>
+                            <span class="text-sm font-semibold leading-6" :class="plan.popular ? 'text-slate-300' : 'text-slate-600'" x-text="t[lang].pricing_per_project"></span>
+                        </p>
+                        <a href="#contact" class="mt-6 block rounded-md py-2 px-3 text-center text-sm font-semibold leading-6 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600" :class="plan.popular ? 'bg-emerald-600 text-white shadow-sm hover:bg-emerald-500' : 'text-emerald-600 ring-1 ring-inset ring-emerald-200 hover:ring-emerald-300'" x-text="t[lang].pricing_btn_select"></a>
+                        <ul role="list" class="mt-8 space-y-3 text-sm leading-6" :class="plan.popular ? 'text-slate-300' : 'text-slate-600'">
+                            <template x-for="service in plan.services">
+                                <li class="flex gap-x-3">
+                                    <svg class="h-6 w-5 flex-none" :class="plan.popular ? 'text-emerald-400' : 'text-emerald-600'" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span x-text="service"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow / Process Section -->
+    <section id="workflow" class="py-24 sm:py-32 relative isolate bg-white overflow-hidden">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl sm:text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-graphite sm:text-4xl" x-text="t[lang].workflow_title"></h2>
+                <p class="mt-6 text-lg leading-8 text-slate-600" x-text="t[lang].workflow_desc"></p>
+            </div>
+            
+            <div class="mx-auto max-w-5xl">
+                <div class="grid grid-cols-1 gap-12 lg:grid-cols-4 lg:gap-8 relative">
+                    <!-- Connecting line (desktop only) -->
+                    <div class="hidden lg:block absolute top-12 left-6 right-6 h-0.5 bg-slate-100" aria-hidden="true"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="relative flex flex-col items-center text-center group">
+                        <div class="z-10 flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-xl shadow-emerald-100 ring-1 ring-slate-100 group-hover:scale-110 transition-transform duration-300 mb-6">
+                            <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-emerald-500 to-emerald-600">01</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].workflow_step1_title"></h3>
+                        <p class="text-sm text-slate-600 leading-relaxed" x-text="t[lang].workflow_step1_desc"></p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative flex flex-col items-center text-center group">
+                        <div class="z-10 flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-xl shadow-emerald-100 ring-1 ring-slate-100 group-hover:scale-110 transition-transform duration-300 mb-6">
+                            <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-emerald-500 to-emerald-600">02</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].workflow_step2_title"></h3>
+                        <p class="text-sm text-slate-600 leading-relaxed" x-text="t[lang].workflow_step2_desc"></p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative flex flex-col items-center text-center group">
+                        <div class="z-10 flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-xl shadow-emerald-100 ring-1 ring-slate-100 group-hover:scale-110 transition-transform duration-300 mb-6">
+                            <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-emerald-500 to-emerald-600">03</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].workflow_step3_title"></h3>
+                        <p class="text-sm text-slate-600 leading-relaxed" x-text="t[lang].workflow_step3_desc"></p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative flex flex-col items-center text-center group">
+                        <div class="z-10 flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-xl shadow-emerald-100 ring-1 ring-slate-100 group-hover:scale-110 transition-transform duration-300 mb-6">
+                            <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-emerald-500 to-emerald-600">04</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-graphite mb-3" x-text="t[lang].workflow_step4_title"></h3>
+                        <p class="text-sm text-slate-600 leading-relaxed" x-text="t[lang].workflow_step4_desc"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials / Social Proof Section -->
+    <section class="py-24 sm:py-32 relative isolate bg-slate-50 overflow-hidden">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="mx-auto max-w-2xl sm:text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-graphite sm:text-4xl" x-text="t[lang].reviews_title"></h2>
+                <p class="mt-6 text-lg leading-8 text-slate-600" x-text="t[lang].reviews_desc"></p>
+            </div>
+            
+            <div class="mx-auto flex overflow-x-auto snap-x snap-mandatory gap-8 pb-8 hide-scrollbar">
+                <template x-for="review in t[lang].reviews.filter(r => r.show)">
+                    <div class="flex flex-col bg-white rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow duration-300 shrink-0 w-80 snap-center">
+                        <div class="flex gap-1 mb-4">
+                            <template x-for="i in 5">
+                                <svg class="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clip-rule="evenodd" />
+                                </svg>
+                            </template>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-8 flex-grow" x-text="review.text"></p>
+                        <div class="flex items-center gap-x-4 mt-auto">
+                            <div class="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 font-bold" x-text="review.initials"></div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-graphite" x-text="review.name"></h4>
+                                <p class="text-sm text-slate-500" x-text="review.role"></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer id="contact" class="bg-graphite py-16 sm:py-24 text-slate-300">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <!-- Left Column -->
+                <div class="flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6" x-text="t[lang].footer_title"></h2>
+                        <p class="text-lg leading-8 text-slate-400 max-w-md mb-10" x-text="t[lang].footer_desc"></p>
+                        
+                        <div class="space-y-4 text-sm leading-6">
+                            <div class="flex items-center gap-x-3">
+                                <svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                                <a href="mailto:hello@devagency.com" class="hover:text-white transition-colors">hello@devagency.com</a>
+                            </div>
+                            <div class="flex items-center gap-x-3">
+                                <svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                                <span x-text="t[lang].footer_location"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-16 pt-8 border-t border-white/10 text-sm text-slate-500" x-text="t[lang].footer_copyright">
+                    </div>
+                </div>
+
+                <!-- Right Column / Form -->
+                <div>
+                    <form action="https://formspree.io/f/your_id" method="POST" class="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10 shadow-xl">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium leading-6 text-white" x-text="t[lang].form_label_name"></label>
+                                <div class="mt-2">
+                                    <input type="text" name="name" id="name" autocomplete="given-name" required class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_name_placeholder">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium leading-6 text-white" x-text="t[lang].form_label_email"></label>
+                                <div class="mt-2">
+                                    <input type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_email_placeholder">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium leading-6 text-white" x-text="t[lang].form_label_msg"></label>
+                                <div class="mt-2">
+                                    <textarea id="message" name="message" rows="4" required class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_msg_placeholder"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <button type="submit" class="block w-full rounded-md bg-emerald-600 px-3.5 py-3.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-all duration-300" x-text="t[lang].form_btn_submit">
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function portfolioData() {
+            return {
+                lang: 'ru',
+                t: {
+                    ru: {
+                        nav_about: 'О нас',
+                        nav_pricing: 'Тарифы',
+                        nav_workflow: 'Как работаем',
+                        nav_contact: 'Контакты',
+                        btn_contact: 'Связаться с нами',
+                        hero_title: 'Разработка сайтов и <br/>веб-сервисов для',
+                        hero_title_highlight: 'вас',
+                        hero_desc: 'От простых лендингов и визиток до полноценных CRM-систем. Гарантируем отзывчивость, скорость работы и абсолютно прозрачный результат.',
+                        hero_btn_start: 'Начать проект',
+                        
+                        about_title: 'Почему работают с нами',
+                        about_card1_title: 'Отзывчивость',
+                        about_card1_desc: 'Всегда на связи, внимательно слушаем и слышим клиента на всех этапах работы.',
+                        about_card2_title: 'Скорость работы',
+                        about_card2_desc: 'Работаем без затягивания сроков, ценим ваше время и соблюдаем дедлайны.',
+                        about_card3_title: 'Прозрачный результат',
+                        about_card3_desc: 'Понятный процесс на каждом этапе, никаких скрытых платежей или сюрпризов.',
+                        about_card4_title: 'Ориентированность на клиента',
+                        about_card4_desc: 'Делаем то, что нужно именно твоему бизнесу, без навязывания лишних услуг.',
+                        
+                        pricing_title: 'Тарифы и Услуги',
+                        pricing_desc: 'Выберите оптимальное решение для вас.',
+                        pricing_popular: 'Популярный',
+                        pricing_per_project: '/проект',
+                        pricing_btn_select: 'Выбрать',
+                        
+                        workflow_title: 'Как мы работаем',
+                        workflow_desc: 'Прозрачный процесс от первой встречи до успешного релиза.',
+                        workflow_step1_title: 'Изучаем запрос',
+                        workflow_step1_desc: 'Собираем все пожелания и вникаем в задачу.',
+                        workflow_step2_title: 'Прототип',
+                        workflow_step2_desc: 'Делаем черновой вариант и структуру.',
+                        workflow_step3_title: 'Согласование',
+                        workflow_step3_desc: 'Обсуждаем с вами и дорабатываем детали.',
+                        workflow_step4_title: 'Деплой',
+                        workflow_step4_desc: 'Выкатываем в интернет и передаем доступы.',
+                        
+                        reviews_title: 'Отзывы клиентов',
+                        reviews_desc: 'Что о нас говорят компании, с которыми мы работаем.',
+                        
+                        footer_title: 'Готовы начать проект?',
+                        footer_desc: 'Свяжитесь с нами, чтобы обсудить вашу идею и узнать, как мы можем помочь вашему бизнесу расти.',
+                        footer_location: 'г. Кишинев, Молдова',
+                        footer_copyright: '© 2026 DevAgency. Все права защищены.',
+                        form_label_name: 'Имя',
+                        form_name_placeholder: 'Иван Иванов',
+                        form_label_email: 'Email',
+                        form_email_placeholder: 'hello@example.com',
+                        form_label_msg: 'Сообщение',
+                        form_msg_placeholder: 'Опишите вашу задачу...',
+                        form_btn_submit: 'Отправить сообщение',
+                
+                        pricing: [
+                            { name: 'Сайт-визитка', description: 'Эффективное решение для презентации бизнеса в сети.', price: '$100 - $200', popular: false, services: ['Уникальный дизайн (до 5 блоков)', 'Адаптивная верстка (Mobile First)', 'Настройка контактных форм'] },
+                            { name: 'CRM-система', description: 'Продвинутое решение с возможностью полноценно обновлять данные через админку.', price: 'от $300', popular: true, services: ['Удобная панель управления', 'Гибкое управление контентом', 'Автоматизация бизнес-процессов', 'База клиентов и аналитика'] },
+                            { name: 'Сложные системы', description: 'Нестандартные решения, маркетплейсы и SAAS проекты.', price: 'от $400', popular: false, services: ['Микросервисная архитектура', 'Сложные интеграции (API, ERP)', 'Поддержка высоких нагрузок', 'Расширенная безопасность'] }
+                        ],
+                        reviews: [
+                            { show: true, text: '«Заказал сайт-визитку для своей СТО. Ребята сделали все быстро, хотя я пару раз просил поправить контакты и добавить фото боксов. Теперь клиенты без проблем находят нас в интернете.»', initials: 'АС', name: 'Алексей Смирнов', role: 'Владелец СТО «АвтоМастер»' },
+                            { show: true, text: '«Нужна была простая CRM для учета заказов в моем цветочном магазине. Сделали удобную систему, теперь не путаюсь в доставках на 8 марта. Очень довольна подходом!»', initials: 'ОП', name: 'Ольга Попова', role: 'Владелица цветочного «Ромашка»' },
+                            { show: true, text: '«У меня своя пекарня, и мы давно хотели сделать каталог продукции для оптовых заказчиков. Получилось стильно и без лишних наворотов, то что нужно.»', initials: 'ИМ', name: 'Игорь Морозов', role: 'Основатель пекарни «Хлебный Дом»' },
+                            { show: false, text: 'Скрытый отзыв', initials: 'С', name: 'Скрыт', role: '...' }
+                        ]
+                    },
+                    en: {
+                        nav_about: 'About',
+                        nav_pricing: 'Pricing',
+                        nav_workflow: 'Workflow',
+                        nav_contact: 'Contact',
+                        btn_contact: 'Contact Us',
+                        hero_title: 'Websites and web services development for',
+                        hero_title_highlight: 'you',
+                        hero_desc: 'From simple landing pages to full-fledged CRM systems. We guarantee responsiveness, speed, and absolutely transparent results.',
+                        hero_btn_start: 'Start Project',
+                        
+                        about_title: 'Why work with us',
+                        about_card1_title: 'Responsiveness',
+                        about_card1_desc: 'Always in touch, carefully listen and hear the client at all stages of work.',
+                        about_card2_title: 'Speed of work',
+                        about_card2_desc: 'We work without delays, value your time and meet deadlines.',
+                        about_card3_title: 'Transparent result',
+                        about_card3_desc: 'Clear process at every stage, no hidden fees or surprises.',
+                        about_card4_title: 'Client orientation',
+                        about_card4_desc: 'We do what exactly your business needs, without imposing unnecessary services.',
+                        
+                        pricing_title: 'Pricing & Services',
+                        pricing_desc: 'Choose the optimal solution for you.',
+                        pricing_popular: 'Popular',
+                        pricing_per_project: '/project',
+                        pricing_btn_select: 'Select',
+                        
+                        workflow_title: 'How we work',
+                        workflow_desc: 'Transparent process from the first meeting to a successful release.',
+                        workflow_step1_title: 'Study request',
+                        workflow_step1_desc: 'We collect all wishes and delve into the task.',
+                        workflow_step2_title: 'Prototype',
+                        workflow_step2_desc: 'We make a draft version and structure.',
+                        workflow_step3_title: 'Approval',
+                        workflow_step3_desc: 'We discuss with you and finalize the details.',
+                        workflow_step4_title: 'Deploy',
+                        workflow_step4_desc: 'We roll out to the internet and hand over accesses.',
+                        
+                        reviews_title: 'Client Reviews',
+                        reviews_desc: 'What companies we work with say about us.',
+                        
+                        footer_title: 'Ready to start a project?',
+                        footer_desc: 'Contact us to discuss your idea and find out how we can help your business grow.',
+                        footer_location: 'Chisinau, Moldova',
+                        footer_copyright: '© 2026 DevAgency. All rights reserved.',
+                        form_label_name: 'Name',
+                        form_name_placeholder: 'John Doe',
+                        form_label_email: 'Email',
+                        form_email_placeholder: 'hello@example.com',
+                        form_label_msg: 'Message',
+                        form_msg_placeholder: 'Describe your task...',
+                        form_btn_submit: 'Send Message',
+                
+                        pricing: [
+                            { name: 'Business Card Website', description: 'An effective solution for presenting a business online.', price: '$100 - $200', popular: false, services: ['Unique design (up to 5 blocks)', 'Responsive layout (Mobile First)', 'Contact forms setup'] },
+                            { name: 'CRM System', description: 'Advanced solution with the ability to fully update data via admin panel.', price: 'from $300', popular: true, services: ['Convenient control panel', 'Flexible content management', 'Business process automation', 'Client base and analytics'] },
+                            { name: 'Complex Systems', description: 'Custom solutions, marketplaces and SAAS projects.', price: 'from $400', popular: false, services: ['Microservice architecture', 'Complex integrations (API, ERP)', 'High load support', 'Enhanced security'] }
+                        ],
+                        reviews: [
+                            { show: true, text: '"Ordered a business card website for my service station. The guys did everything quickly, although I asked to fix the contacts and add photos of the boxes a couple of times. Now clients find us on the internet without problems."', initials: 'AS', name: 'Alexey Smirnov', role: 'Owner of "AutoMaster" Service Station' },
+                            { show: true, text: '"I needed a simple CRM to track orders in my flower shop. They made a convenient system, now I don\'t get confused in deliveries on March 8. Very satisfied with the approach!"', initials: 'OP', name: 'Olga Popova', role: 'Owner of "Romashka" flower shop' },
+                            { show: true, text: '"I have my own bakery, and we have long wanted to make a product catalog for wholesale customers. It turned out stylish and without unnecessary bells and whistles, exactly what was needed."', initials: 'IM', name: 'Igor Morozov', role: 'Founder of "Bread House" bakery' },
+                            { show: false, text: 'Hidden review', initials: 'H', name: 'Hidden', role: '...' }
+                        ]
+                    },
+                    ro: {
+                        nav_about: 'Despre noi',
+                        nav_pricing: 'Prețuri',
+                        nav_workflow: 'Cum lucrăm',
+                        nav_contact: 'Contacte',
+                        btn_contact: 'Contactează-ne',
+                        hero_title: 'Dezvoltare site-uri și <br/>servicii web pentru',
+                        hero_title_highlight: 'tine',
+                        hero_desc: 'De la landing page-uri și site-uri de prezentare simple până la sisteme CRM complexe. Garantăm receptivitate, viteză de lucru și un rezultat absolut transparent.',
+                        hero_btn_start: 'Începe proiectul',
+
+                        
+                        about_title: 'De ce lucrează cu noi',
+                        about_card1_title: 'Receptivitate',
+                        about_card1_desc: 'Întotdeauna în contact, ascultăm cu atenție și auzim clientul în toate etapele de lucru.',
+                        about_card2_title: 'Viteza de lucru',
+                        about_card2_desc: 'Lucrăm fără întârzieri, prețuim timpul tău și respectăm termenele limită.',
+                        about_card3_title: 'Rezultat transparent',
+                        about_card3_desc: 'Proces clar la fiecare etapă, fără taxe ascunse sau surprize.',
+                        about_card4_title: 'Orientare spre client',
+                        about_card4_desc: 'Facem exact ceea ce are nevoie afacerea ta, fără a impune servicii inutile.',
+                        
+                        pricing_title: 'Prețuri și Servicii',
+                        pricing_desc: 'Alege soluția optimă pentru tine.',
+                        pricing_popular: 'Popular',
+                        pricing_per_project: '/proiect',
+                        pricing_btn_select: 'Alege',
+                        
+                        workflow_title: 'Cum lucrăm',
+                        workflow_desc: 'Proces transparent de la prima întâlnire până la o lansare de succes.',
+                        workflow_step1_title: 'Studiem cererea',
+                        workflow_step1_desc: 'Colectăm toate dorințele și pătrundem în sarcină.',
+                        workflow_step2_title: 'Prototip',
+                        workflow_step2_desc: 'Facem o variantă draft și structura.',
+                        workflow_step3_title: 'Aprobare',
+                        workflow_step3_desc: 'Discutăm cu tine și finalizăm detaliile.',
+                        workflow_step4_title: 'Lansare',
+                        workflow_step4_desc: 'Lansăm pe internet și predăm accesul.',
+                        
+                        reviews_title: 'Recenziile clienților',
+                        reviews_desc: 'Ce spun companiile cu care lucrăm despre noi.',
+                        
+                        footer_title: 'Ești gata să începi un proiect?',
+                        footer_desc: 'Contactează-ne pentru a discuta ideea ta și pentru a afla cum putem ajuta afacerea ta să crească.',
+                        footer_location: 'Chișinău, Moldova',
+                        footer_copyright: '© 2026 DevAgency. Toate drepturile rezervate.',
+                        form_label_name: 'Nume',
+                        form_name_placeholder: 'Ion Creangă',
+                        form_label_email: 'Email',
+                        form_email_placeholder: 'salut@exemplu.com',
+                        form_label_msg: 'Mesaj',
+                        form_msg_placeholder: 'Descrie sarcina ta...',
+                        form_btn_submit: 'Trimite mesaj',
+                
+                        pricing: [
+                            { name: 'Site de prezentare', description: 'O soluție eficientă pentru prezentarea unei afaceri online.', price: '$100 - $200', popular: false, services: ['Design unic (până la 5 blocuri)', 'Aspect responsiv (Mobile First)', 'Configurare formulare de contact'] },
+                            { name: 'Sistem CRM', description: 'Soluție avansată cu posibilitatea de a actualiza complet datele prin panoul de administrare.', price: 'de la $300', popular: true, services: ['Panou de control convenabil', 'Management flexibil al conținutului', 'Automatizarea proceselor de afaceri', 'Baza de clienți și analitică'] },
+                            { name: 'Sisteme Complexe', description: 'Soluții personalizate, marketplace-uri și proiecte SAAS.', price: 'de la $400', popular: false, services: ['Arhitectura microserviciilor', 'Integrări complexe (API, ERP)', 'Suport pentru sarcini mari', 'Securitate sporită'] }
+                        ],
+                        reviews: [
+                            { show: true, text: '„Am comandat un site de prezentare pentru stația mea de deservire tehnică. Băieții au făcut totul rapid, deși am cerut să corecteze contactele și să adauge fotografii de câteva ori. Acum clienții ne găsesc pe internet fără probleme.”', initials: 'AS', name: 'Alexandru Smirnov', role: 'Proprietar Stație Deservire Tehnică „AutoMaster”' },
+                            { show: true, text: '„Aveam nevoie de un CRM simplu pentru evidența comenzilor în magazinul meu de flori. Au făcut un sistem convenabil, acum nu mă încurc în livrări pe 8 martie. Foarte mulțumită de abordare!”', initials: 'OP', name: 'Olga Popova', role: 'Proprietar magazin de flori „Romashka”' },
+                            { show: true, text: '„Am propria mea brutărie și de mult timp am vrut să fac un catalog de produse pentru clienții angro. A ieșit stilat și fără lucruri inutile, exact ceea ce aveam nevoie.”', initials: 'IM', name: 'Igor Morozov', role: 'Fondator brutăria „Casa Pâinii”' },
+                            { show: false, text: 'Recenzie ascunsă', initials: 'A', name: 'Ascuns', role: '...' }
+                        ]
+                    }
+                },
+                initData() {
+                    // Имитация загрузки
+                    fetch('https://fake-google-sheets-url.com/api')
+                        .then(res => res.json())
+                        .catch(() => {
+                            // Моковые данные теперь находятся внутри t[lang].pricing и t[lang].reviews,
+                            // поэтому отдельная инициализация не требуется, но при необходимости 
+                            // можно реализовать логику тут.
+                        });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
