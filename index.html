@@ -28,7 +28,7 @@
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-indigo-500 selection:text-white" x-data="portfolioData()" x-init="initData()">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-indigo-500 selection:text-white" x-data="portfolioData()">
 
     <!-- Header -->
     <header class="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 border-b border-slate-200/50" x-data="{ mobileMenuOpen: false }">
@@ -331,7 +331,7 @@
     </section>
 
     <!-- Testimonials / Social Proof Section -->
-    <section class="py-24 sm:py-32 relative isolate bg-slate-50 overflow-hidden">
+    <section class="py-24 sm:py-32 relative isolate bg-slate-50 overflow-hidden" x-show="showReviews">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl sm:text-center mb-16">
                 <h2 class="text-3xl font-bold tracking-tight text-graphite sm:text-4xl" x-text="t[lang].reviews_title"></h2>
@@ -390,31 +390,32 @@
 
                 <!-- Right Column / Form -->
                 <div>
-                    <form action="https://formspree.io/f/your_id" method="POST" class="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10 shadow-xl">
+                    <form @submit.prevent="submitForm()" class="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10 shadow-xl">
                         <div class="space-y-6">
                             <div>
                                 <label for="name" class="block text-sm font-medium leading-6 text-white" x-text="t[lang].form_label_name"></label>
                                 <div class="mt-2">
-                                    <input type="text" name="name" id="name" autocomplete="given-name" required class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_name_placeholder">
+                                    <input type="text" name="name" id="name" autocomplete="given-name" required x-model="formData.name" class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_name_placeholder">
                                 </div>
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium leading-6 text-white" x-text="t[lang].form_label_email"></label>
                                 <div class="mt-2">
-                                    <input type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_email_placeholder">
+                                    <input type="email" name="email" id="email" autocomplete="email" required x-model="formData.email" class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_email_placeholder">
                                 </div>
                             </div>
                             <div>
                                 <label for="message" class="block text-sm font-medium leading-6 text-white" x-text="t[lang].form_label_msg"></label>
                                 <div class="mt-2">
-                                    <textarea id="message" name="message" rows="4" required class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_msg_placeholder"></textarea>
+                                    <textarea id="message" name="message" rows="4" required x-model="formData.message" class="block w-full rounded-md border-0 bg-white/5 py-3 px-4 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-emerald-500 sm:text-sm sm:leading-6 placeholder:text-slate-500 transition-colors" :placeholder="t[lang].form_msg_placeholder"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-8">
-                            <button type="submit" class="block w-full rounded-md bg-emerald-600 px-3.5 py-3.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-all duration-300" x-text="t[lang].form_btn_submit">
+                            <button type="submit" :disabled="isSubmitting" :class="{'opacity-75 cursor-not-allowed': isSubmitting}" class="block w-full rounded-md bg-emerald-600 px-3.5 py-3.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-all duration-300" x-text="isSubmitting ? t[lang].form_btn_submitting : t[lang].form_btn_submit">
                             </button>
                         </div>
+                        <div x-show="isSent" x-text="t[lang].form_success_msg" x-transition class="mt-4 text-emerald-400 text-center font-medium"></div>
                     </form>
                 </div>
             </div>
@@ -425,6 +426,32 @@
         function portfolioData() {
             return {
                 lang: 'ru',
+                showReviews: true,
+                formData: { name: '', email: '', message: '' },
+                isSubmitting: false,
+                isSent: false,
+                submitForm() {
+                    if(this.isSubmitting) return;
+                    this.isSubmitting = true;
+                    
+                    fetch('https://script.google.com/macros/s/AKfycbz1Osk0AxuCw0DBaHBPmUglg9HwA61Z2W78YB-mSx424MaXF8_yJpyrO4oDAQpIJ2gPVA/exec', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(this.formData)
+                    })
+                    .then(() => {
+                        this.formData = { name: '', email: '', message: '' };
+                        this.isSubmitting = false;
+                        this.isSent = true;
+                        setTimeout(() => {
+                            this.isSent = false;
+                        }, 5000);
+                    })
+                    .catch(err => {
+                        console.error('Error submitting form:', err);
+                        this.isSubmitting = false;
+                    });
+                },
                 t: {
                     ru: {
                         nav_about: 'О нас',
@@ -478,6 +505,8 @@
                         form_label_msg: 'Сообщение',
                         form_msg_placeholder: 'Опишите вашу задачу...',
                         form_btn_submit: 'Отправить сообщение',
+                        form_btn_submitting: 'Отправка...',
+                        form_success_msg: 'Сообщение отправлено!',
                 
                         pricing: [
                             { name: 'Сайт-визитка', description: 'Эффективное решение для презентации бизнеса в сети.', price: '$100 - $200', popular: false, services: ['Уникальный дизайн (до 5 блоков)', 'Адаптивная верстка (Mobile First)', 'Настройка контактных форм'] },
@@ -543,6 +572,8 @@
                         form_label_msg: 'Message',
                         form_msg_placeholder: 'Describe your task...',
                         form_btn_submit: 'Send Message',
+                        form_btn_submitting: 'Sending...',
+                        form_success_msg: 'Message sent!',
                 
                         pricing: [
                             { name: 'Business Card Website', description: 'An effective solution for presenting a business online.', price: '$100 - $200', popular: false, services: ['Unique design (up to 5 blocks)', 'Responsive layout (Mobile First)', 'Contact forms setup'] },
@@ -609,6 +640,8 @@
                         form_label_msg: 'Mesaj',
                         form_msg_placeholder: 'Descrie sarcina ta...',
                         form_btn_submit: 'Trimite mesaj',
+                        form_btn_submitting: 'Se trimite...',
+                        form_success_msg: 'Mesaj trimis!',
                 
                         pricing: [
                             { name: 'Site de prezentare', description: 'O soluție eficientă pentru prezentarea unei afaceri online.', price: '$100 - $200', popular: false, services: ['Design unic (până la 5 blocuri)', 'Aspect responsiv (Mobile First)', 'Configurare formulare de contact'] },
@@ -623,15 +656,52 @@
                         ]
                     }
                 },
-                initData() {
-                    // Имитация загрузки
-                    fetch('https://fake-google-sheets-url.com/api')
+                init() {
+                    this.loadData();
+                },
+                applyData(data) {
+                    if (data.settings) {
+                        this.showReviews = (data.settings.show_reviews === true || data.settings.show_reviews === 'TRUE');
+                    }
+                    ['ru', 'en', 'ro'].forEach(lang => {
+                        if (data.pricing) {
+                            this.t[lang].pricing = data.pricing.filter(p => p.name_ru).map(p => ({
+                                popular: (p.popular === true || p.popular === 'TRUE'),
+                                name: p[`name_${lang}`] || '',
+                                description: p[`desc_${lang}`] || '',
+                                price: p.price || '',
+                                services: p[`services_${lang}`] ? p[`services_${lang}`].split('\n') : []
+                            }));
+                        }
+                        if (data.reviews) {
+                            this.t[lang].reviews = data.reviews
+                                .filter(r => r.show === true || r.show === 'TRUE')
+                                .map(r => ({
+                                    initials: r.initials || '',
+                                    name: r.name || '',
+                                    role: r[`role_${lang}`] || '',
+                                    text: r[`text_${lang}`] || '',
+                                    show: true
+                                }));
+                        }
+                    });
+                },
+                loadData() {
+                    const cached = localStorage.getItem('agencyData');
+                    if (cached) {
+                        try {
+                            this.applyData(JSON.parse(cached));
+                        } catch (e) {
+                            console.error('Error parsing cache', e);
+                        }
+                    }
+                    fetch('https://script.google.com/macros/s/AKfycbz1Osk0AxuCw0DBaHBPmUglg9HwA61Z2W78YB-mSx424MaXF8_yJpyrO4oDAQpIJ2gPVA/exec?t=' + new Date().getTime())
                         .then(res => res.json())
-                        .catch(() => {
-                            // Моковые данные теперь находятся внутри t[lang].pricing и t[lang].reviews,
-                            // поэтому отдельная инициализация не требуется, но при необходимости 
-                            // можно реализовать логику тут.
-                        });
+                        .then(data => {
+                            this.applyData(data);
+                            localStorage.setItem('agencyData', JSON.stringify(data));
+                        })
+                        .catch(err => console.error('Error loading data:', err));
                 }
             }
         }
