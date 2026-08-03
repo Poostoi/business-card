@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html :lang="lang" class="scroll-smooth">
+<html :lang="lang" class="scroll-smooth scroll-pt-24">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,11 +27,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-indigo-500 selection:text-white" x-data="portfolioData()">
 
     <!-- Header -->
-    <header class="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 border-b border-slate-200/50" x-data="{ mobileMenuOpen: false }">
+    <header class="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 border-b border-slate-200/50">
         <nav class="max-w-7xl mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
             <div class="flex lg:flex-1">
                 <a href="#" class="-m-1.5 p-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-600 rounded-sm">
@@ -39,13 +40,13 @@
                     <span class="text-2xl font-bold tracking-tight text-graphite">DevAgency<span class="text-emerald-600">.</span></span>
                 </a>
             </div>
-            
+
             <!-- Mobile menu button -->
             <div class="flex lg:hidden">
-                <button 
-                    type="button" 
+                <button
+                    type="button"
                     class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                    @click="mobileMenuOpen = true"
+                    @click.stop="mobileMenuOpen = true"
                 >
                     <span class="sr-only">Открыть главное меню</span>
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -53,7 +54,7 @@
                     </svg>
                 </button>
             </div>
-            
+
             <!-- Desktop menu -->
             <div class="hidden lg:flex lg:gap-x-12">
                 <a href="#about" class="text-sm font-medium leading-6 text-slate-700 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_about"></a>
@@ -70,76 +71,77 @@
                 <a href="#contact" class="text-sm font-semibold leading-6 bg-graphite text-white px-5 py-2.5 rounded-full hover:bg-emerald-600 transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2" x-text="t[lang].btn_contact"></a>
             </div>
         </nav>
-        
-        <!-- Mobile menu, show/hide based on menu open state. -->
-        <div 
-            class="lg:hidden" 
-            x-show="mobileMenuOpen" 
-            style="display: none;" 
-            role="dialog" 
-            aria-modal="true"
+    </header>
+
+    <!-- Mobile menu -->
+    <div
+        class="lg:hidden"
+        x-show="mobileMenuOpen"
+        x-cloak
+        x-effect="document.body.classList.toggle('overflow-hidden', mobileMenuOpen)"
+        role="dialog"
+        aria-modal="true"
+    >
+        <!-- Background backdrop -->
+        <div
+            x-show="mobileMenuOpen"
+            x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-sm"
+        ></div>
+
+        <!-- Menu panel -->
+        <div
+            x-show="mobileMenuOpen"
+            x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-300 transform"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full"
+            class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-slate-900/10"
+            @click.away="mobileMenuOpen = false"
         >
-            <!-- Background backdrop -->
-            <div 
-                x-show="mobileMenuOpen"
-                x-transition:enter="transition-opacity ease-linear duration-300"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition-opacity ease-linear duration-300"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-sm"
-            ></div>
-            
-            <!-- Menu panel -->
-            <div 
-                x-show="mobileMenuOpen"
-                x-transition:enter="transition ease-out duration-300 transform"
-                x-transition:enter-start="translate-x-full"
-                x-transition:enter-end="translate-x-0"
-                x-transition:leave="transition ease-in duration-300 transform"
-                x-transition:leave-start="translate-x-0"
-                x-transition:leave-end="translate-x-full"
-                class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-slate-900/10"
-                @click.away="mobileMenuOpen = false"
-            >
-                <div class="flex items-center justify-between">
-                    <a href="#" class="-m-1.5 p-1.5">
-                        <span class="sr-only">Ваша Компания</span>
-                        <span class="text-2xl font-bold tracking-tight text-graphite">DevAgency<span class="text-emerald-600">.</span></span>
-                    </a>
-                    <button 
-                        type="button" 
-                        class="-m-2.5 rounded-md p-2.5 text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                        @click="mobileMenuOpen = false"
-                    >
-                        <span class="sr-only">Закрыть меню</span>
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="mt-8 flow-root">
-                    <div class="-my-6 divide-y divide-slate-200/50">
-                        <div class="space-y-2 py-6">
-                            <a href="#about" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_about" @click="mobileMenuOpen = false"></a>
-                            <a href="#pricing" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_pricing" @click="mobileMenuOpen = false"></a>
-                            <a href="#workflow" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_workflow" @click="mobileMenuOpen = false"></a>
-                            <a href="#contact" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_contact" @click="mobileMenuOpen = false"></a>
+            <div class="flex items-center justify-between">
+                <a href="#" class="-m-1.5 p-1.5">
+                    <span class="sr-only">Ваша Компания</span>
+                    <span class="text-2xl font-bold tracking-tight text-graphite">DevAgency<span class="text-emerald-600">.</span></span>
+                </a>
+                <button
+                    type="button"
+                    class="-m-2.5 rounded-md p-2.5 text-slate-700 hover:text-emerald-600 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                    @click="mobileMenuOpen = false"
+                >
+                    <span class="sr-only">Закрыть меню</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="mt-8 flex flex-col items-center">
+                <div class="-my-6 divide-y divide-slate-200/50 text-center">
+                    <div class="space-y-2 py-6">
+                        <a href="#about" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_about" @click="mobileMenuOpen = false"></a>
+                        <a href="#pricing" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_pricing" @click="mobileMenuOpen = false"></a>
+                        <a href="#workflow" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_workflow" @click="mobileMenuOpen = false"></a>
+                        <a href="#contact" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].nav_contact" @click="mobileMenuOpen = false"></a>
+                    </div>
+                    <div class="py-6 flex flex-col items-center gap-4">
+                        <div class="flex gap-2 text-sm font-medium text-slate-500 px-3">
+                            <a href="#" @click.prevent="lang = 'ru'" :class="lang === 'ru' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RU</a>|
+                            <a href="#" @click.prevent="lang = 'en'" :class="lang === 'en' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">EN</a>|
+                            <a href="#" @click.prevent="lang = 'ro'" :class="lang === 'ro' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RO</a>
                         </div>
-                        <div class="py-6 flex flex-col gap-4">
-                            <div class="flex gap-2 text-sm font-medium text-slate-500 px-3">
-                                <a href="#" @click.prevent="lang = 'ru'" :class="lang === 'ru' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RU</a>|
-                                <a href="#" @click.prevent="lang = 'en'" :class="lang === 'en' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">EN</a>|
-                                <a href="#" @click.prevent="lang = 'ro'" :class="lang === 'ro' ? 'text-graphite font-bold' : 'hover:text-emerald-600 transition-colors'">RO</a>
-                            </div>
-                            <a href="#contact" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].btn_contact" @click="mobileMenuOpen = false"></a>
-                        </div>
+                        <a href="#contact" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-slate-800 hover:bg-slate-50 hover:text-emerald-600 transition-colors" x-text="t[lang].btn_contact" @click="mobileMenuOpen = false"></a>
                     </div>
                 </div>
             </div>
         </div>
-    </header>
+    </div>
 
     <!-- Hero Section -->
     <main class="relative isolate pt-14">
@@ -367,7 +369,7 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
                 <!-- Left Column -->
-                <div class="flex flex-col justify-between">
+                <div class="flex flex-col justify-between order-last lg:order-first">
                     <div>
                         <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6" x-text="t[lang].footer_title"></h2>
                         <p class="text-lg leading-8 text-slate-400 max-w-md mb-10" x-text="t[lang].footer_desc"></p>
@@ -375,7 +377,7 @@
                         <div class="space-y-4 text-sm leading-6">
                             <div class="flex items-center gap-x-3">
                                 <svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
-                                <a href="mailto:hello@devagency.com" class="hover:text-white transition-colors">hello@devagency.com</a>
+                                <a href="mailto:goorellon@gmail.com" class="hover:text-white transition-colors">goorellon@gmail.com</a>
                             </div>
                             <div class="flex items-center gap-x-3">
                                 <svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
@@ -389,7 +391,7 @@
                 </div>
 
                 <!-- Right Column / Form -->
-                <div>
+                <div class="order-first lg:order-last">
                     <form @submit.prevent="submitForm()" class="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10 shadow-xl">
                         <div class="space-y-6">
                             <div>
@@ -426,6 +428,7 @@
         function portfolioData() {
             return {
                 lang: 'ru',
+                mobileMenuOpen: false,
                 showReviews: true,
                 formData: { name: '', email: '', message: '' },
                 isSubmitting: false,
@@ -501,7 +504,7 @@
                         form_label_name: 'Имя',
                         form_name_placeholder: 'Иван Иванов',
                         form_label_email: 'Email',
-                        form_email_placeholder: 'hello@example.com',
+                        form_email_placeholder: 'goorellon@gmail.com',
                         form_label_msg: 'Сообщение',
                         form_msg_placeholder: 'Опишите вашу задачу...',
                         form_btn_submit: 'Отправить сообщение',
@@ -568,7 +571,7 @@
                         form_label_name: 'Name',
                         form_name_placeholder: 'John Doe',
                         form_label_email: 'Email',
-                        form_email_placeholder: 'hello@example.com',
+                        form_email_placeholder: 'goorellon@gmail.com',
                         form_label_msg: 'Message',
                         form_msg_placeholder: 'Describe your task...',
                         form_btn_submit: 'Send Message',
@@ -636,7 +639,7 @@
                         form_label_name: 'Nume',
                         form_name_placeholder: 'Ion Creangă',
                         form_label_email: 'Email',
-                        form_email_placeholder: 'salut@exemplu.com',
+                        form_email_placeholder: 'goorellon@gmail.com',
                         form_label_msg: 'Mesaj',
                         form_msg_placeholder: 'Descrie sarcina ta...',
                         form_btn_submit: 'Trimite mesaj',
